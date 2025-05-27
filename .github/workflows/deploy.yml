@@ -33,12 +33,9 @@ jobs:
           echo "=== Pulling Docker images ==="
           docker compose pull jobs-watcher
           
-          # Stop and remove existing containers
-          echo "=== Stopping existing containers ==="
-          docker-compose down || true          
-          # Start new containers
-          echo "=== Starting new containers ==="
-          IMAGE_TAG=latest docker-compose up -d
+          # Restart jobs-watcher service
+          echo "=== Restarting jobs-watcher service ==="
+          docker compose restart jobs-watcher
           
           # Wait for health check
           echo "=== Waiting for health check ==="
@@ -51,10 +48,6 @@ jobs:
           # Verify health endpoint
           echo "=== Verifying application health ==="
           curl -f http://localhost:5000/health || echo "Health check failed, but continuing..."
-          
-          # Clean up old images
-          echo "=== Cleaning up old images ==="
-          docker image prune -f
           
           echo "=== Deployment completed ==="
 

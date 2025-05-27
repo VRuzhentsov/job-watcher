@@ -11,6 +11,8 @@ services:
     image: jobs-watcher:local
     
     # Load .env file (inherited from base) + development overrides
+    env_file:
+      - .env
     environment:
       - FLASK_ENV=development
       - FLASK_DEBUG=1

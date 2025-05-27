@@ -2,7 +2,7 @@ name: Deploy to Remote Server
 
 on:
   workflow_run:
-    workflows: ["Create and publish a Docker image"]
+    workflows: ["Publish Docker image"]
     types:
       - completed
     branches: [main]
@@ -29,10 +29,9 @@ jobs:
           
           # Set image tag to latest
           export IMAGE_TAG="latest"
-          echo "Deploying image tag: $IMAGE_TAG"
-            # Pull latest image
-          echo "=== Pulling Docker image ==="
-          docker pull ghcr.io/vruzhentsov/jobs-watcher:latest
+          echo "Deploying image tag: $IMAGE_TAG"          # Pull latest images
+          echo "=== Pulling Docker images ==="
+          docker compose pull jobs-watcher
           
           # Stop and remove existing containers
           echo "=== Stopping existing containers ==="

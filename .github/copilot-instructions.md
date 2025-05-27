@@ -107,6 +107,7 @@ This ensures code follows current best practices and uses the latest API pattern
 - Keep all comments, even temporary ones
 - Use early returns to avoid nested conditions
 - **Documentation**: Use f1e_get-library-docs tool to fetch up-to-date documentation for libraries and frameworks when needed
+- **File Management**: NEVER create backup/versioned files (app-new.py, app.backup, app_old.py). NEVER delete or move existing files unless explicitly requested. Edit files in place using replace_string_in_file or insert_edit_into_file tools.
 
 ## Production Deployment
 - **Container Orchestration**: Docker Compose with restart policies

@@ -1,7 +1,20 @@
 import os
+import logging
+import sys
 import sentry_sdk
 from sentry_sdk.integrations.flask import FlaskIntegration
 from flask import Flask
+from services.telegram import run_bot
+
+# Configure logging for Docker containers
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    stream=sys.stdout,
+    force=True
+)
+
+logger = logging.getLogger(__name__)
 
 def create_app():
     """Create and configure the Flask app."""
@@ -25,6 +38,17 @@ def create_app():
 app = create_app()
 
 if __name__ == '__main__':
-    # In production, disable debug mode to ensure Sentry works properly
+    import threading
+    
+    # Start Flask app in a separate thread
     debug_mode = os.getenv('FLASK_DEBUG', 'False').lower() == 'true'
-    app.run(host='0.0.0.0', port=5000, debug=debug_mode)
+    flask_thread = threading.Thread(
+        target=lambda: app.run(host='0.0.0.0', port=5000, debug=debug_mode, use_reloader=False),
+        daemon=True
+    )
+    flask_thread.start()
+    logger.info("Flask app started in background thread")
+    
+    # Run Telegram bot in main thread (avoids asyncio threading issues)
+    logger.info("Starting Telegram bot in main thread...")
+    run_bot()

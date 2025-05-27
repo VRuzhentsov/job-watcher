@@ -33,9 +33,9 @@ jobs:
           echo "=== Pulling Docker images ==="
           docker compose pull jobs-watcher
           
-          # Restart jobs-watcher service
-          echo "=== Restarting jobs-watcher service ==="
-          docker compose up -d jobs-watcher
+          # Restart service
+          echo "=== Restarting service ==="
+          docker compose up -d jobs-watcher postgres redis
           
           # Wait for health check
           echo "=== Waiting for health check ==="

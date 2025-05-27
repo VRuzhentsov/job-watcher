@@ -4,6 +4,7 @@ import sys
 import sentry_sdk
 from sentry_sdk.integrations.flask import FlaskIntegration
 from flask import Flask
+from models import db, init_db
 from services.telegram import run_bot
 
 # Configure logging for Docker containers
@@ -19,6 +20,9 @@ logger = logging.getLogger(__name__)
 def create_app():
     """Create and configure the Flask app."""
     app = Flask(__name__)
+    
+    # Initialize database and migrations
+    db, migrate = init_db(app)
 
     sentry_dsn = os.getenv('SENTRY_DSN')
     if sentry_dsn:

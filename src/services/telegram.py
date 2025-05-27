@@ -28,6 +28,18 @@ dp = Dispatcher()
 async def start_handler(message: Message):
     """Handle /start command"""
     logger.info(f"User {message.from_user.id} started the bot")
+      # Find or create user in database
+    try:
+        from models import User, db
+        from app import app
+        
+        with app.app_context():
+            user = User.find_or_create(message.from_user)
+            logger.info(f"User processed: {user}")
+    except Exception as e:
+        logger.error(f"Database error: {e}")
+        # Continue without database for now
+    
     await message.answer("🚀 Welcome to Jobs Watcher Bot!\n\nI'm here to help you find job opportunities.")
 
 async def start_bot():

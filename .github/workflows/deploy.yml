@@ -35,7 +35,7 @@ jobs:
           
           # Restart jobs-watcher service
           echo "=== Restarting jobs-watcher service ==="
-          docker compose restart jobs-watcher
+          docker compose up -d jobs-watcher
           
           # Wait for health check
           echo "=== Waiting for health check ==="

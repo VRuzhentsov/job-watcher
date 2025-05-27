@@ -1,0 +1,24 @@
+# Docker Compose override file for local development
+# Copy this to docker-compose.override.yml for local development
+# This file is automatically loaded by docker-compose
+
+version: '3.8'
+
+services:
+  jobs-watcher:
+    # Build locally instead of using Docker Hub image
+    build: .
+    image: jobs-watcher:local
+    
+    # Load .env file (inherited from base) + development overrides
+    environment:
+      - FLASK_ENV=development
+      - FLASK_DEBUG=1
+    
+    # Mount source code for live reloading
+    volumes:
+      - ./src:/app/src
+    
+    # Optional: Add additional volumes for development
+    # - ./config:/app/config
+    # - ./logs:/app/logs

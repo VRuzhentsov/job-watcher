@@ -7,6 +7,7 @@ services:
     # Mount source code for live reloading
     volumes:
       - ./src:/app/src
+      - ./migrations:/app/migrations
     
     # Optional: Add additional volumes for development
     # - ./config:/app/config

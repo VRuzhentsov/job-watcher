@@ -12,6 +12,7 @@ This file contains coding guidelines and patterns for developing the Jobs Watche
 - **"Empty"** = Basic skeleton/template only
 - **Specific requests** = Follow exactly as stated, don't add unrequested features
 - **One service** = Create only that service, not additional ones
+- **File names** = Use EXACTLY the filename user specifies, never add prefixes/suffixes like "test_", "new_", "_backup"
 - **Example**: If user asks for "basic docker compose", create ONLY the requested service, not a full multi-service stack
 
 ## Core Architecture
@@ -107,7 +108,7 @@ This ensures code follows current best practices and uses the latest API pattern
 - Keep all comments, even temporary ones
 - Use early returns to avoid nested conditions
 - **Documentation**: Use f1e_get-library-docs tool to fetch up-to-date documentation for libraries and frameworks when needed
-- **File Management**: NEVER create backup/versioned files (app-new.py, app.backup, app_old.py). NEVER delete or move existing files unless explicitly requested. Edit files in place using replace_string_in_file or insert_edit_into_file tools.
+- **File Management**: NEVER create backup/versioned files (app-new.py, app.backup, app_old.py). NEVER delete or move existing files unless explicitly requested. NEVER modify user-specified filenames by adding prefixes/suffixes (test_, new_, _backup, _old). Edit files in place using replace_string_in_file or insert_edit_into_file tools.
 
 ## Production Deployment
 - **Container Orchestration**: Docker Compose with restart policies
@@ -119,6 +120,8 @@ This ensures code follows current best practices and uses the latest API pattern
 ---
 
 **Note**: Prioritize simplicity and reliability over complex features. Independent modules make debugging easier.
+
+**CRITICAL FILE HANDLING**: Never create backup files (app-new.py, app.backup) or delete existing files. Never modify filenames by adding prefixes/suffixes (test_, new_, _old). Always use EXACT filenames specified by user. Always edit in place.
 
 Keep all code comments. Use early returns in conditionals. Make minimal edits to satisfy requirements.
 Keep all code comments and do not remove them anytime, keep even dumb test & temp comments.

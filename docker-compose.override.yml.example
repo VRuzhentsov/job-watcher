@@ -6,7 +6,7 @@ version: '3.8'
 
 services:
   jobs-watcher:
-    # Build locally instead of using Docker Hub image
+    # Build locally instead of using GitHub Container Registry image
     build: .
     image: jobs-watcher:local
     

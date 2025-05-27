@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   jobs-watcher:
-    image: ${DOCKER_USERNAME:-vruzhentsov}/jobs-watcher:${IMAGE_TAG:-latest}
+    image: ghcr.io/vruzhentsov/jobs-watcher:${IMAGE_TAG:-latest}
     container_name: jobs-watcher-app
     ports:
       - "5000:5000"

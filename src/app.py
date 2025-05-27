@@ -12,6 +12,7 @@ def create_app():
         sentry_sdk.init(
             dsn=sentry_dsn,
             send_default_pii=True,
+            environment=os.getenv('FLASK_ENV', 'production'),
         )
 
     @app.route('/health')

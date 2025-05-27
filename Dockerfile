@@ -18,8 +18,9 @@ COPY pyproject.toml uv.lock ./
 # Install dependencies using UV
 RUN uv sync --frozen
 
-# Copy source code
+# Copy source code and migrations
 COPY src/ ./src/
+COPY migrations/ ./migrations/
 
 # Expose port 5000
 EXPOSE 5000

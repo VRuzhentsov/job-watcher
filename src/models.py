@@ -5,8 +5,9 @@ Database models for Jobs Watcher
 import os
 import logging
 from datetime import datetime, timezone
+from dataclasses import dataclass
 from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
+from flask_migrate import Migrate, upgrade
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from sqlalchemy import Integer, String, DateTime, Boolean
 
@@ -16,47 +17,36 @@ class Base(DeclarativeBase):
     pass
 
 db = SQLAlchemy(model_class=Base)
+migrate = Migrate()    
 
 def init_db(app):
     """Initialize database with app configuration"""
+    logger.info("Initializing database...")
+    
     # Database configuration
     database_url = os.getenv("DATABASE_URL")
     if not database_url:
-        logger.error("❌ DATABASE_URL environment variable is required!")
+        logger.error("DATABASE_URL environment variable is required!")
         raise ValueError("DATABASE_URL environment variable must be set")
     
     app.config["SQLALCHEMY_DATABASE_URI"] = database_url
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     
-    logger.info(f"🔗 Connecting to database: {database_url.split('@')[1] if '@' in database_url else 'Unknown'}")  # Log host without credentials
-    
-    # Initialize database with app
     db.init_app(app)
-    
-    # Initialize migrations
-    migrate = Migrate(app, db)    # Auto-run migrations on startup
-    with app.app_context():
-        try:
-            from flask_migrate import upgrade
-            logger.info("🔄 Applying database migrations...")
-            upgrade()
-            logger.info("✅ Database migrations applied successfully")
-        except Exception as e:
-            logger.error(f"❌ Database initialization failed: {e}")
-            logger.error("💡 Make sure PostgreSQL is running and DATABASE_URL is correct")
-            # Don't raise the exception to allow the app to continue (useful for CLI commands that don't need DB)
+    migrate.init_app(app, db)
     
     return db, migrate
 
+@dataclass
 class User(db.Model):
     """User model for Telegram users"""
     __tablename__ = 'users'
     
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     telegram_id: Mapped[int] = mapped_column(Integer, unique=True, nullable=False)
-    username: Mapped[str] = mapped_column(String(255), nullable=True)
-    first_name: Mapped[str] = mapped_column(String(255), nullable=True)
-    last_name: Mapped[str] = mapped_column(String(255), nullable=True)
+    username: Mapped[str | None] = mapped_column(String(255), nullable=True, default=None)
+    first_name: Mapped[str | None] = mapped_column(String(255), nullable=True, default=None)
+    last_name: Mapped[str | None] = mapped_column(String(255), nullable=True, default=None)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc))
     updated_at: Mapped[datetime] = mapped_column(

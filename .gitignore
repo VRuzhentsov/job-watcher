@@ -15,4 +15,4 @@ wheels/
 # docker
 docker-compose.override.yml
 
-.idea/workspace.xml
+.idea

@@ -9,7 +9,23 @@
             "command": "uv",
             "args": [
                 "run",
+                "--env-file",
+                ".env.local",
                 "./src/app.py"
+            ]
+        },
+        {
+            "label": "Migrate",
+            "type": "shell",
+            "command": "docker",
+            "args": [
+                "exec",
+                "jobs-watcher-app",
+                "uv",
+                "run",
+                "flask",
+                "db",
+                "upgrade"
             ]
         }
     ]

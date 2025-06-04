@@ -99,16 +99,22 @@ def watch_files():
             logger.error(f"File watcher error: {e}")
             time.sleep(5)  # Wait longer on error
 
+app, db, migrate = create_app()
+ctx = app.app_context()
+ctx.push()
+
+def run_flask():
+    app.run(host='0.0.0.0', port=5000, debug=debug_mode, use_reloader=False)
+
 if __name__ == '__main__':
     logger.info("=== Starting Jobs Watcher Application ===")
     
     # Initialize database and Flask app
-    app, db, migrate = create_app()
     logger.info("Database initialized")
     
     # Start Flask server in background thread for health checks
     flask_thread = threading.Thread(
-        target=lambda: app.run(host='0.0.0.0', port=5000, debug=debug_mode, use_reloader=False),
+        target=run_flask,
         daemon=True
     )
     flask_thread.start()
@@ -126,6 +132,8 @@ if __name__ == '__main__':
         run_bot()
     except KeyboardInterrupt:
         logger.info("Application stopped by user")
+        db.session.remove()
+        sys.exit(0)
     except Exception as e:
         logger.error(f"Application error: {e}")
         sys.exit(1)

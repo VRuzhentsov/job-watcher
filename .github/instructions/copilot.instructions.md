@@ -7,6 +7,9 @@ applyTo: "**"
 ## Development Guidelines
 
 This file contains coding guidelines and patterns for developing the Jobs Watcher application. For project overview, setup instructions, and user documentation, see the main README.md.
+Use sequential thinking MCP tool to plan and execute user's prompt step-by-step. 
+Carefully analyze the prompt requirements and break down the tasks into logical, ordered steps, ensuring each step builds upon the previous one. 
+Think through the problem methodically, considering dependencies, potential obstacles, and the best sequence to develop, test, and deploy the code efficiently and effectively.
 
 **Context Requirement**: Always include the README.md in prompts to provide complete project context, including features, setup instructions, and project structure.
 

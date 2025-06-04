@@ -23,6 +23,13 @@ RUN uv sync --frozen
 COPY src/ ./src/
 COPY migrations/ ./migrations/
 
+# Copy and make entrypoint script executable
+COPY docker/entrypoint.sh ./
+RUN chmod +x entrypoint.sh
+
+# Install netcat for database readiness check
+RUN apt-get update && apt-get install -y netcat-traditional && rm -rf /var/lib/apt/lists/*
+
 # Expose port 5000
 EXPOSE 5000
 
@@ -34,5 +41,4 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
 ENV FLASK_APP=src/app.py
 ENV PYTHONPATH=/app
 
-# Run the Flask application
-CMD ["uv", "run", "./src/app.py"]
+ENTRYPOINT ["./entrypoint.sh"]

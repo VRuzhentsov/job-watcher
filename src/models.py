@@ -9,7 +9,7 @@ from dataclasses import dataclass
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate, upgrade
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
-from sqlalchemy import Integer, String, DateTime, Boolean
+from sqlalchemy import Integer, String, DateTime, Boolean, ForeignKey
 
 logger = logging.getLogger(__name__)
 
@@ -81,3 +81,43 @@ class User(db.Model):
             db.session.commit()
             
         return user
+
+@dataclass
+class Alert(db.Model):
+    """Alert model for job alerts"""
+    __tablename__ = 'alerts'
+    
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    user_id: Mapped[int] = mapped_column(Integer, ForeignKey('users.id'), nullable=False)
+    search_term: Mapped[str] = mapped_column(String(255), nullable=False)
+    location: Mapped[str | None] = mapped_column(String(255), nullable=True, default=None)
+    frequency: Mapped[int] = mapped_column(Integer, nullable=False, default=24)  # in hours
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc))
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime, 
+        default=lambda: datetime.now(timezone.utc), 
+        onupdate=lambda: datetime.now(timezone.utc)
+    )
+    
+    user = db.relationship('User', backref='alerts')
+    
+    def __repr__(self):
+        return f'<Alert {self.id}: {self.search_term} in {self.location}>'
+    
+    @classmethod
+    def create(cls, user_id, search_term, location, frequency):
+        """Create a new alert"""
+        alert = cls(
+            user_id=user_id,
+            search_term=search_term,
+            location=location,
+            frequency=frequency
+        )
+        db.session.add(alert)
+        db.session.commit()
+        return alert
+    
+    @classmethod
+    def get_user_alerts(cls, user_id):
+        """Get all alerts for a user"""
+        return cls.query.filter_by(user_id=user_id).all()

@@ -43,16 +43,12 @@ jobs:
           
           # Check if containers are running
           echo "=== Checking container status ==="
-          docker-compose ps
-            # Verify health endpoint
+          docker-compose ps          # Verify health endpoint
           echo "=== Verifying application health ==="
           curl -f http://localhost:5000/health || echo "Health check failed, but continuing..."
           
-          # Run database migrations
-          echo "=== Running database migrations ==="
-          docker exec jobs-watcher-app uv run flask db upgrade
-          
           echo "=== Deployment completed ==="
+          echo "Note: Database migrations now run automatically on container startup"
 
     - name: Notify deployment status
       if: always()

@@ -23,8 +23,7 @@ class JobSearchStates(StatesGroup):
 
 # Bot setup
 bot_token = os.getenv('TELEGRAM_BOT_TOKEN')
-# TELEGRAM_BOT_TOKEN
-logger.info("Initializing Telegram bot with token: %s", bot_token)
+
 if not bot_token:
     logger.error("TELEGRAM_BOT_TOKEN not found in environment variables")
     exit(1)
